@@ -17,7 +17,7 @@ module Api::V1
         
         if queries.present?
             queries.each do |q|
-                tmp_recipe_ids = Ingredient.where('UNACCENT(LOWER(name)) ILIKE UNACCENT(?)', q)
+                tmp_recipe_ids = Ingredient.where('unaccent(LOWER(name)) ILIKE unaccent(?)', q)
                                            .pluck(:recipe_id)
                                            .uniq
 
@@ -30,7 +30,7 @@ module Api::V1
 
         # if queries.present?
         #     queries.each do |q|
-        #         ingredient_query = Ingredient.where('UNACCENT(LOWER(name)) ILIKE UNACCENT(?)', q.downcase)
+        #         ingredient_query = Ingredient.where('unaccent(LOWER(name)) ILIKE unaccent(?)', q.downcase)
         #         ingredient_query = ingredient_query.where(id: ingredient_ids) unless ingredient_ids.empty?
         #         ingredient_ids = ingredient_query.pluck(:id)
         #     end
