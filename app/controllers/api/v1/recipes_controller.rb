@@ -13,11 +13,10 @@ module Api::V1
 
         queries = query.split(",").map { |q| "%#{q.downcase.strip}%" }
         recipe_ids = []
-        # ingredient_ids = []
         
         if queries.present?
             queries.each do |q|
-                tmp_recipe_ids = Ingredient.where('unaccent(LOWER(name)) ILIKE unaccent(?)', q)
+                tmp_recipe_ids = Ingredient.where('UNACCENT(LOWER(name)) ILIKE UNACCENT(?)', q)
                                            .pluck(:recipe_id)
                                            .uniq
 
@@ -27,15 +26,6 @@ module Api::V1
                 recipe_ids = (recipe_ids + tmp_recipe_ids) - excluded_ids
             end
         end
-
-        # if queries.present?
-        #     queries.each do |q|
-        #         ingredient_query = Ingredient.where('unaccent(LOWER(name)) ILIKE unaccent(?)', q.downcase)
-        #         ingredient_query = ingredient_query.where(id: ingredient_ids) unless ingredient_ids.empty?
-        #         ingredient_ids = ingredient_query.pluck(:id)
-        #     end
-        #     recipe_ids = Ingredient.where(id: ingredient_ids).pluck(:recipe_id).uniq
-        # end
         
         recipes = Recipe.where(id: recipe_ids).order('rate DESC NULLS LAST').order(id: :asc)
                         .page(page)
